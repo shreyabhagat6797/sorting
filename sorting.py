@@ -603,3 +603,274 @@ for i in range(0,len(flight_list)):
     print("The PNR details of the passengers in the flight",flight_name,":")
     seating_stack.display()
 
+#searching
+
+'''Given a stack of boxes in different colors. Write a python function that accepts the stack of boxes and removes those boxes having color other than the primary colors (Red, Green and Blue) from the stack. The removed boxes should be en-queued into a new queue and returned. The original stack should have only the boxes having primary colors and the order must be maintained.
+ 
+Perform case sensitive string comparison wherever necessary.
+ 
+Note: Consider the queue to be of the same size as that of the original stack.'''
+
+
+ class Queue:
+    def __init__(self,max_size):
+
+        self.__max_size=max_size
+        self.__elements=[None]*self.__max_size
+        self.__rear=-1
+        self.__front=0
+
+    def is_full(self):
+        if(self.__rear==self.__max_size-1):
+                return True
+        return False
+
+    def is_empty(self):
+        if(self.__front>self.__rear):
+            return True
+        return False
+
+    def enqueue(self,data):
+        if(self.is_full()):
+            print("Queue is full!!!")
+        else:
+            self.__rear+=1
+            self.__elements[self.__rear]=data
+
+    def dequeue(self):
+        if(self.is_empty()):
+            print("Queue is empty!!!")
+        else:
+            data=self.__elements[self.__front]
+            self.__front+=1
+            return data
+
+    def display(self):
+        for index in range(self.__front, self.__rear+1):
+            print(self.__elements[index])
+
+    def get_max_size(self):
+        return self.__max_size
+
+    #You can use the below __str__() to print the elements of the DS object while debugging
+    def __str__(self):
+        msg=[]
+        index=self.__front
+        while(index<=self.__rear):
+            msg.append((str)(self.__elements[index]))
+            index+=1
+        msg=" ".join(msg)
+        msg="Queue data(Front to Rear): "+msg
+        return msg
+
+class Stack:
+    def __init__(self,max_size):
+        self.__max_size=max_size
+        self.__elements=[None]*self.__max_size
+        self.__top=-1
+
+    def is_full(self):
+        if(self.__top==self.__max_size-1):
+            return True
+        return False
+
+    def is_empty(self):
+        if(self.__top==-1):
+            return True
+        return False
+
+    def push(self,data):
+        if(self.is_full()):
+            print("The stack is full!!")
+        else:
+            self.__top+=1
+            self.__elements[self.__top]=data
+
+    def pop(self):
+        if(self.is_empty()):
+            print("The stack is empty!!")
+        else:
+            data= self.__elements[self.__top]
+            self.__top-=1
+            return data
+
+    def display(self):
+        if(self.is_empty()):
+            print("The stack is empty")
+        else:
+            index=self.__top
+            while(index>=0):
+                print(self.__elements[index])
+                index-=1
+
+    def get_max_size(self):
+        return self.__max_size
+
+    #You can use the below __str__() to print the elements of the DS object while debugging
+    def __str__(self):
+        msg=[]
+        index=self.__top
+        while(index>=0):
+            msg.append((str)(self.__elements[index]))
+            index-=1
+        msg=" ".join(msg)
+        msg="Stack data(Top to Bottom): "+msg
+        return msg
+
+def separate_boxes(box_stack):
+    box_color=['Red', 'Green', 'Blue']
+    stack=Stack(8)
+    queue=Queue(8)
+    while(not box_stack.is_empty()):
+        color=box_stack.pop()
+        if color.title() in box_color:
+            stack.push(color)
+        elif color.title() not in box_color:
+            queue.enqueue(color)
+    while(not stack.is_empty()):
+        box_stack.push(stack.pop())
+    return queue
+
+#Use different values for stack and test your program
+box_stack=Stack(8)
+box_stack.push("Red")
+box_stack.push("Magenta")
+box_stack.push("Yellow")
+box_stack.push("Red")
+box_stack.push("Orange")
+box_stack.push("Green")
+box_stack.push("White")
+box_stack.push("Purple")
+print("Boxes in the stack:")
+box_stack.display()
+result=separate_boxes(box_stack)
+print()
+print("Boxes in the stack after modification:")
+box_stack.display()
+print("Boxes in the queue:")
+result.display()
+
+'''The International Cricket Council (ICC) wanted to do some analysis of international cricket matches held in last 10 years.
+ 
+Given a list containing match details as shown below:
+[match_detail1,match_detail2……]
+
+Format of each match_detail in the list is as shown below:
+country_name : championship_name : total_number_of_matches_played : number_of_matches_won
+Example: AUS:CHAM:5:2 means Australia has participated in Champions Trophy 5 times and have won 2 times.
+ 
+Write a python program which performs the following:
+find_matches (country_name): Accepts the country_name and returns the list of details of matches played by that country.
+ 
+max_wins(): Returns a dictionary containing the championship name as the key and the list of country/countries which have won the maximum number of matches in that championship as the value.
+ 
+find_winner(country1,country2): Accepts name of two countries and returns the country name which has won more number of matches in all championships. If both have won equal number of matches, return "Tie".
+ 
+Perform case sensitive string comparison wherever necessary.
+ 
+match_list – ['ENG:WOR:2:0', 'AUS:CHAM:5:2', 'PAK:T20:5:1', 'AUS:WOR:2:1', 'SA:T20:5:0', 'IND:T20:5:3', 'PAK:WOR:2:0', 'SA:WOR:2:0', 'SA:CHAM:5:1', 'IND:WOR:2:1']
+ 
+Sample Input	                   Expected Output
+find_matches ("AUS")	              ['AUS':CHAM:5:2','AUS:WOR:2:1']
+max_wins()	                          {'WOR': ['AUS', 'IND'], 'CHAM': ['AUS'], 'T20': ['IND']}
+find_winner("AUS","IND")	            IND
+'''
+   
+def find_matches(country_name):
+    l=[]
+    for match in match_list:
+        detail=match.split(":")
+        if detail[0] == country_name:
+            l.append(match)      
+    return l
+
+def max_wins():
+    dictionary={}
+    for match in match_list:
+        detail = match.split(":")
+        if detail[1] not in dictionary.keys():
+            dictionary[detail[1]]=None
+        if dictionary[detail[1]]==None:
+            dictionary[detail[1]]=int(detail[3])
+        elif dictionary[detail[1]]>=0:
+            if dictionary[detail[1]]<int(detail[3]):
+                dictionary[detail[1]]=int(detail[3])
+    temp=dictionary.copy()
+    for key, values in dictionary.items():
+        dictionary[key]=[]
+    for match in match_list:
+        detail = match.split(":")
+        if int(detail[3])==temp[detail[1]]:
+            dictionary[detail[1]].append(detail[0])
+    return dictionary
+
+def find_winner(country1,country2):
+    count1,count2=0,0
+    for match in match_list:
+        detail = match.split(":")
+        if detail[0] == country1:
+            count1+=int(detail[3])
+        if detail[0] == country2:
+            count2+=int(detail[3])
+    if count1==count2:
+        return "Tie"
+    elif count1>count2:
+        return country1
+    else:
+        return country2
+
+#Consider match_list to be a global variable
+match_list=['AUS:T20:5:3', 'IND:CHAM:5:3', 'AUS:WOR:2:0', 'CAN:CHAM:5:1', 'ENG:WOR:2:0', 'IND:T20:6:4', 'PAK:T20:4:3', 'IND:WOR:5:3', 'AUS:CHAM:1:0', 'PAK:CHAM:5:1', 'SA:CHAM:5:2', 'SA:T20:5:0', 'PAK:WOR:2:0']
+
+#Pass different values to each function and test your program
+print("The match status list details are:")
+print(match_list)
+print(find_matches("AUS"))
+print(max_wins())
+
+
+
+
+'''Alice, a school teacher, has decided to take her 20 students to an exhibition. She got the tickets a week before (T1 to T20) and she was informed that students will be allowed only in groups of 10 inside the exhibition hall.
+ 
+On the day of exhibition, few students did not turn up. So the teacher followed the below strategy to identify the first 10 students who were sent as group-1.
+ 
+Suppose the ticket id of the students who turned up on that day is as follows:
+T20, T5, T10, T1, T2, T8, T16, T17, T9, T4, T12, T13, T18
+She made the students stand in a line in increasing order of their ticket numbers. They were asked to leave a vacant position, in case a student has not turned up.
+Ex: T1, T2, V, T4, T5, V, V, T8, T9, T10, V, T12, T13, V, V, T16, T17, T18, V, T20 where V - indicates vacant position.
+Grouped them into 2 groups of 10 each including vacant positions.
+Ex: Group – 1 (T1, T2, V, T4, T5, V, V, T8, T9, T10), Group – 2 (V, T12, T13, V, V, T16, T17, T18, V, T20)
+Filled the vacant positions with the students from the next group as shown in the example below.
+Ex: Group – 1 (T1, T2, T12, T4, T5, T13, T16, T8, T9, T10) Group -2 (T17, T18, T20)
+Write a python function which accepts the unsorted ticket id list and returns the list of ticket ids of the ten students who were finally sent inside as part of Group-1.
+ 
+Sample Input	                                              Expected Output
+['T20','T5','T10','T1','T2','T8','T16','T17',
+'T9','T4','T12','T13', 'T18']	                        ['T1', 'T2', 'T12', 'T4', 'T5', 'T13', 'T16', 'T8', 'T9', 'T10']
+'''
+
+
+def arrange_tickets(tickets_list):
+    new_list=[]
+    for i in range(1,21):
+        if "T"+str(i) in tickets_list:
+            new_list.append("T"+str(i))
+        else:
+            if i<=10:
+                new_list.append('V')
+    print(new_list)
+    counter=10
+    for index,ticket in enumerate(new_list):
+        if ticket=='V' and index<=10:
+            new_list[index]=new_list[counter]
+            counter+=1
+    return new_list[:10]
+
+tickets_list = ['T5', 'T17', 'T10', 'T2', 'T9', 'T15', 'T17', 'T19', 'T16', 'T1', 'T12', 'T13']
+print("Ticket ids of all the available students :")
+print(tickets_list)
+result=arrange_tickets(tickets_list)
+print()
+print("Ticket ids of the ten students in Group-1:")
+print(result)
